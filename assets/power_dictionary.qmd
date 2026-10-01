@@ -1,0 +1,70 @@
+---
+title: NASA POWER Data Dictionary
+format:
+  html:
+    embed-resources: true
+---
+
+## NASA Prediction of Worldwide Energy Resources (POWER)
+
+The [NASA POWER project](https://power.larc.nasa.gov/) "provides solar and meteorological data sets from NASA research for support of renewable energy, building energy efficiency and agricultural needs."
+
+This project uses daily meteorological data from 2012 to 2021, retrieved from NASA POWER using the [nasapower package](https://ropensci.github.io/nasapower/articles/nasapower.html).
+
+## Variables: `power.csv`
+
+`date`: Date
+
+`year`: Year
+
+`mm`: Month
+
+`dd`: Day
+
+`doy`: Day of year
+
+`lon`: Longitude
+
+`lat`: Latitude
+
+`ps`: MERRA-2 Surface Pressure (kPa)
+
+`t2m`: MERRA-2 Temperature at 2 Meters (C)
+
+`t2m_max`: MERRA-2 Temperature at 2 Meters Maximum (C)
+
+`t2m_min`: MERRA-2 Temperature at 2 Meters Minimum (C)
+
+`ws2m`: MERRA-2 Wind Speed at 2 Meters (m/s)
+
+`wd2m`: MERRA-2 Wind Direction at 2 Meters (Degrees)
+
+`rh2m`: MERRA-2 Relative Humidity at 2 Meters (%)
+
+## Variables: `power_with_months.csv`
+
+The same variables as `power.csv`, plus:
+
+`month`: Month name (e.g., January)
+
+## Variables: `precip.csv`
+
+Data for four research sites. Site `A` is the same location as `power.csv`.
+
+`lon`: Longitude
+
+`lat`: Latitude
+
+`site_id`: Site ID
+
+`year`: Year
+
+`mm`: Month
+
+`dd`: Day of month
+
+`doy`: Day of year
+
+`prectotcorr`: MERRA-2 Precipitation Corrected (mm/day)
+
+`qv2m`: MERRA-2 Specific Humidity at 2 Meters (g/kg)

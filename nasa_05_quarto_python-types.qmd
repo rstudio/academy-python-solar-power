@@ -1,0 +1,222 @@
+---
+title: "Data types"
+format: html
+---
+# Instructions
+
+This week, you learned about three data types in pandas---strings, datetimes, and categoricals.
+
+In this milestone, you'll plot various climate metrics for each month in a
+single plot by chronological month order.
+
+To learn more about the variables contained in the `power` and `precip` data sets, refer to the data dictionary
+[here](https://rstudio.github.io/academy-python-solar-power/assets/power_dictionary.html).
+
+# Milestone
+
+```{python}
+#| label: 'setup'
+#| include: false
+
+# Import your packages here
+import pandas as pd
+from matplotlib import rcParams
+from plotnine import ggplot, aes, geom_col, coord_flip, labs, theme_bw
+
+# Set some options
+pd.set_option('display.max_columns', None)
+rcParams.update({'savefig.bbox': 'tight'}) # Keeps plotnine legend from being cut off
+```
+
+## Data types
+
+In this milestone, you'll use a sorted categorical variable to plot various
+climate metrics for each month in a single plot in chronological month order.
+
+## Recreation
+
+### Part 1 - Import
+
+Before you begin, you will need to import your data sets.
+Use the code chunk below to read two data sets from the `data/` directory:
+
+1. `power.csv`, save it as `power`
+2. `precip.csv`, save it as `precip`
+
+```{python}
+#| label: 'recreation-import'
+
+```
+
+### Part 2 - Prepare the data
+
+Run the two code chunks below to recode numeric months to names and create summary tables.
+
+```{python}
+#| label: 'define-functions'
+
+# Recodes month codes to names
+def recode_month(month):
+  if month == 1:
+    return 'January'
+  elif month == 2:
+    return 'February'
+  elif month == 3:
+    return 'March'
+  elif month == 4:
+    return 'April'
+  elif month == 5:
+    return 'May'
+  elif month == 6:
+    return 'June'
+  elif month == 7:
+    return 'July'
+  elif month == 8:
+    return 'August'
+  elif month == 9:
+    return 'September'
+  elif month == 10:
+    return 'October'
+  elif month == 11:
+    return 'November'
+  else:
+    return 'December'
+```
+
+```{python}
+#| label: 'transform-data'
+
+power['month_name'] = power['mm'].apply(recode_month)
+precip['month_name'] = precip['mm'].apply(recode_month)
+
+power_summary = (power
+  .groupby('month_name')[['t2m', 'rh2m']]
+  .mean()
+  .reset_index()
+)
+
+power_summary = power_summary.melt(
+  id_vars=['month_name'],
+  value_vars=['t2m', 'rh2m'],
+  var_name='metric',
+  value_name='value'
+)
+
+
+precip_summary = (precip
+  .groupby('month_name')[['qv2m', 'prectotcorr']]
+  .mean()
+  .reset_index()
+)
+
+precip_summary = precip_summary.melt(
+  id_vars=['month_name'],
+  value_vars=['qv2m', 'prectotcorr'],
+  var_name='measurement',
+  value_name='value'
+)
+```
+
+### Part 3 - Combine the tables
+
+Run the code below to see a table.
+
+```{python}
+#| label: 'recreate-this'
+solution = pd.read_csv('data/milestone05.csv')
+solution
+```
+
+Your task is to use what you've learned to transform `power_summary` and
+`precip_summary` into this table.
+
+You will need to:
+
+1.  Rename the `measurement` column in `precip_summary` to `metric`.
+2.  Use the pandas `concat()` function to create a new table called `summary`
+    that contains the rows from `power_summary` and `precip_summary`.
+    Use the `ignore_index` argument to relabel the index of the new table from 0 to 47.
+
+Work in the code chunk below.
+Save the result as `summary`; we will use it in Part 4.
+
+```{python}
+#| label: 'recreation-combine'
+
+```
+
+#### Test it
+
+Run the following code chunk to test whether you have the same answer as the solution:
+
+```{python}
+#| label: 'compare'
+
+# If your answer is correct, the comparison should return an empty DataFrame.
+summary.round(10).compare(solution.round(10))
+```
+
+### Part 4 - The role of order in visualizations
+
+Run the chunk below to visualize the data of `summary`.
+
+```{python}
+#| label: 'summary-plot'
+ggplot.show(
+  ggplot(summary, aes(x='month_name', y='value', fill='metric'))
+  + geom_col(position='dodge')
+  + coord_flip()
+  + labs(x='Month', y='Measured Value', fill='Metric')
+  + theme_bw()
+)
+```
+
+This is a nice plot, but the order of the values on the y-axis is arbitrary
+(ascending alphabetical), which makes it difficult to detect seasonal patterns.
+We want to give the y-axis a more principled order before we publish this plot.
+
+#### Visualization
+
+Using the File Explorer on the left, navigate to the `images/` directory, then click on `milestone05.png` to open an image in the Editor pane
+
+Your task is to recreate this plot.
+Notice that the y-axis is now ordered chronologically.
+
+We recommend that you:
+
+1.  Use `.sort_values()` to sort `power` according to the values in the `mm`
+    column, extract the `month_name` column, and extract unique values.
+    Save this to a Series called `name_order`.
+
+2.  Use the values saved in `name_order` to convert the `month_name` column
+    in `summary` into a sorted, Categorical column.
+    _Hint:_ Use the function `pd.Categorical()`
+
+3.  Use the modified `month_name` column to recreate the plot.
+
+```{python}
+#| label: 'recreation-visualize-1'
+
+```
+
+## Extension
+
+Using the code chunk below, investigate a research question about this data, using the skills you have learned this week and in previous weeks of Academy. Some ideas:
+
+1. Use data visualization to investigate if there is a seasonal pattern in other variables we've computed in previous milestones
+2. Explore potential seasonal patterns in meteorological variables you have not yet investigated.
+3. [any other research question of interest]
+
+Alternately, working with a data set of your own, complete the following:
+
+1. Read in your data
+2. If your data contains ...
+    - date-time data, use code to correctly format your date-time variables
+    - string data, somehow manipulate your string variables
+    - categorical data, modify the categories of your categorical variables
+3. Using a table or graph, present a meaningful subset of your modified data
+
+```{python}
+#| label: 'extension'
+
+```
