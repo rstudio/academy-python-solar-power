@@ -68,6 +68,7 @@ out the `ps`, `t2m`, and `year` columns and save them as variables to use later.
 
 ```{python}
 #| label: 'save_columns'
+#| error: true
 
 # This code will probably look unfamiliar.
 # Don't worry, we will cover this in next week's tutorials.
